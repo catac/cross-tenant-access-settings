@@ -1,0 +1,8 @@
+{
+  "yaml.schemas": {
+    "./.vscode/cross-tenant-access.schema.json": [
+      "defaults.yaml",
+      "peers.yaml"
+    ]
+  }
+}
