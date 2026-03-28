@@ -1,0 +1,10 @@
+- name: "Example Partner"
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  inbound:
+    trust:
+      mfa_accepted: true
+  outbound:
+    b2b_collaboration:
+      access_type: "allowed"
+  tenant_restrictions:
+    access_type: "allowed"

@@ -1,0 +1,18 @@
+inbound:
+  b2b_collaboration:
+    access_type: "allowed"
+  b2b_direct_connect:
+    access_type: "blocked"
+  trust:
+    mfa_accepted: false
+    compliant_device_accepted: false
+    hybrid_azure_ad_joined_device_accepted: false
+
+outbound:
+  b2b_collaboration:
+    access_type: "allowed"
+  b2b_direct_connect:
+    access_type: "blocked"
+
+tenant_restrictions:
+  access_type: "blocked"
