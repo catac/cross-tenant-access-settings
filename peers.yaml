@@ -1,9 +1,15 @@
-- name: "Example Partner"
-  tenant_id: "00000000-0000-0000-0000-000000000000"
+- name: "microsoft.com"
+  tenant_id: "72f988bf-86f1-41af-91ab-2d7cd011db47"
   inbound:
+    automatic_user_consent: true
+    b2b_collaboration:
+      access_type: "allowed"
     trust:
       mfa_accepted: true
+      compliant_device_accepted: true
+      hybrid_azure_ad_joined_device_accepted: true
   outbound:
+    automatic_user_consent: true
     b2b_collaboration:
       access_type: "allowed"
   tenant_restrictions:
