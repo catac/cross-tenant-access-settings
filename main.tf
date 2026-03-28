@@ -123,3 +123,18 @@ resource "microsoft365wp_cross_tenant_access_policy_configuration_partner" "peer
     outbound_allowed = try(each.value.outbound.automatic_user_consent, false)
   }
 }
+
+resource "microsoft365wp_cross_tenant_identity_sync_policy_partner" "peers" {
+  for_each = local.peers
+
+  tenant_id    = each.value.tenant_id
+  display_name = each.value.name
+
+  user_sync_inbound = {
+    is_sync_allowed = try(each.value.inbound.identity_sync.user, false)
+  }
+
+  group_sync_inbound = {
+    is_sync_allowed = try(each.value.inbound.identity_sync.group, false)
+  }
+}
