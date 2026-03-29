@@ -93,6 +93,14 @@ locals {
     }
   }
 
-  # Process peers
-  peers = { for peer in local.peers_raw : peer.tenant_id => peer }
+  # Process peers - group by tenant_id to detect duplicates
+  peers_grouped = { for peer in local.peers_raw : peer.tenant_id => peer... }
+
+  # Find duplicate tenant IDs for error reporting
+  duplicate_tenant_ids = [
+    for tid, peer_list in local.peers_grouped : tid if length(peer_list) > 1
+  ]
+
+  # Final peers map (using the first entry for each tenant_id)
+  peers = { for tid, peer_list in local.peers_grouped : tid => peer_list[0] }
 }

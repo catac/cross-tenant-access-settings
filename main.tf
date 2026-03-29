@@ -1,3 +1,12 @@
+resource "terraform_data" "validate_peers" {
+  lifecycle {
+    precondition {
+      condition     = length(local.duplicate_tenant_ids) == 0
+      error_message = "Duplicate tenant IDs found in ${var.peers_file_path}: ${join(", ", local.duplicate_tenant_ids)}"
+    }
+  }
+}
+
 resource "microsoft365wp_cross_tenant_access_policy_configuration_default" "this" {
   # Inbound Trust
   inbound_trust = {
