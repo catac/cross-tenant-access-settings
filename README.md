@@ -5,66 +5,25 @@ Manage Microsoft Entra ID (Azure AD) cross-tenant access settings using Terrafor
 ## Project Overview
 
 This project provides a declarative way to manage cross-tenant access settings (inbound, outbound, and tenant restrictions) using:
-- **`defaults.yaml`**: Baseline settings for the entire tenant.
-- **`peers.yaml`**: Specific overrides or configurations for partner organizations.
+- **`config/defaults.yaml`**: Baseline settings for the entire tenant.
+- **`config/peers.yaml`**: Specific overrides or configurations for partner organizations.
 - **Terraform**: Uses the `terraprovider/microsoft365wp` provider to apply settings via the Microsoft Graph API.
 
 ## Configuration Files
 
-### `defaults.yaml`
-Define baseline settings for your tenant. For example:
-```yaml
-# yaml-language-server: $schema=./.vscode/cross-tenant-access.schema.json
-inbound:
-  b2b_collaboration:
-    access_type: "allowed"
-  b2b_direct_connect:
-    access_type: "blocked"
-  trust:
-    mfa_accepted: false
-    compliant_device_accepted: false
-    hybrid_azure_ad_joined_device_accepted: false
+### `config/defaults.yaml`
+Define baseline settings for your tenant.
+### `config/peers.yaml`
+List specific partner organizations with their overrides. 
 
-outbound:
-  b2b_collaboration:
-    access_type: "allowed"
-  b2b_direct_connect:
-    access_type: "blocked"
-
-tenant_restrictions:
-  access_type: "blocked"
-```
-
-### `peers.yaml`
-List specific partner organizations with their overrides. Here is a full example for a partner with all supported features:
-```yaml
-- name: "Partner Org"
-  tenant_id: "00000000-0000-0000-0000-000000000000"
-  inbound:
-    trust:
-      mfa_accepted: true
-      compliant_device_accepted: true
-      hybrid_azure_ad_joined_device_accepted: true
-    automatic_user_consent: true
-    identity_sync:
-      user: true
-      group: true
-    b2b_collaboration:
-      access_type: "allowed"
-  outbound:
-    automatic_user_consent: true
-    b2b_collaboration:
-      access_type: "allowed"
-  tenant_restrictions:
-    access_type: "allowed"
-```
+**Validation**: The project automatically ensures that a `tenant_id` is not defined multiple times in `peers.yaml`. If duplicates are found, `terraform plan` will fail with a clear error message.
 
 ## IDE Support (VS Code)
 
 To get auto-completion, validation, and hover documentation in your YAML files:
 1.  Install the [RedHat YAML extension](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml) for VS Code.
 2.  The project includes a JSON schema in `.vscode/cross-tenant-access.schema.json`.
-3.  The schema is automatically mapped to `defaults.yaml` and `peers.yaml` via `.vscode/settings.json`.
+3.  The schema is automatically mapped to YAML files via `.vscode/settings.json`.
 
 ## Setup with `direnv`
 
@@ -81,6 +40,15 @@ To get auto-completion, validation, and hover documentation in your YAML files:
    direnv allow
    ```
 
+## Export Existing Configuration
+
+You can use the helper script to export your current Entra ID cross-tenant partners into `config/peers.yaml`. The script uses [uv](https://github.com/astral-sh/uv) for zero-setup execution:
+
+1.  Run the export script (ensure your environment variables are set via `direnv`):
+    ```bash
+    uv run scripts/export_peers.py
+    ```
+
 ## Terraform Usage
 
 ### Initialize
@@ -89,7 +57,7 @@ terraform init
 ```
 
 ### Import Existing State
-Since these settings often already exist in Entra ID, you may need to import them into your Terraform state.
+If you have already configured settings in Entra ID, you can import them into your Terraform state.
 
 #### Import Defaults
 ```bash
@@ -111,6 +79,7 @@ terraform apply
 
 ## Prerequisites
 - Terraform >= 1.0
+- [uv](https://github.com/astral-sh/uv) (for running the export script)
 - Microsoft Graph API permissions for the service principal:
   - `Policy.ReadWrite.CrossTenantAccess`
   - `Policy.Read.All`

@@ -1,19 +1,20 @@
-- name: microsoft.com
+# yaml-language-server: $schema=../.vscode/cross-tenant-access.schema.json
+- name: null
   tenant_id: 72f988bf-86f1-41af-91ab-2d7cd011db47
   inbound:
-    automatic_user_consent: true
-    identity_sync:
-      user: true
-      group: true
     b2b_collaboration:
       access_type: allowed
     trust:
       mfa_accepted: true
       compliant_device_accepted: true
       hybrid_azure_ad_joined_device_accepted: true
-  outbound:
     automatic_user_consent: true
+    identity_sync:
+      user: true
+      group: true
+  outbound:
     b2b_collaboration:
       access_type: allowed
+    automatic_user_consent: true
   tenant_restrictions:
     access_type: allowed
