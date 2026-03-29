@@ -66,6 +66,7 @@
       "type": "object",
       "properties": {
         "name": { "type": "string" },
+        "fqdn": { "type": "string" },
         "tenant_id": { "type": "string", "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" },
         "inbound": {
           "type": "object",
@@ -87,7 +88,7 @@
         },
         "tenant_restrictions": { "$ref": "#/definitions/tenant_restrictions_settings" }
       },
-      "required": ["name", "tenant_id"],
+      "required": ["name", "fqdn", "tenant_id"],
       "additionalProperties": false
     },
     "peers": {

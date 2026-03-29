@@ -16,6 +16,31 @@ Define baseline settings for your tenant.
 ### `config/peers.yaml`
 List specific partner organizations with their overrides. 
 
+**Full Example**:
+```yaml
+# yaml-language-server: $schema=../.vscode/cross-tenant-access.schema.json
+- name: "Partner Org"
+  fqdn: "partner.com"
+  tenant_id: "00000000-0000-0000-0000-000000000000"
+  inbound:
+    trust:
+      mfa_accepted: true
+      compliant_device_accepted: true
+      hybrid_azure_ad_joined_device_accepted: true
+    automatic_user_consent: true
+    identity_sync:
+      user: true
+      group: true
+    b2b_collaboration:
+      access_type: "allowed"
+  outbound:
+    automatic_user_consent: true
+    b2b_collaboration:
+      access_type: "allowed"
+  tenant_restrictions:
+    access_type: "allowed"
+```
+
 **Validation**: The project automatically ensures that a `tenant_id` is not defined multiple times in `peers.yaml`. If duplicates are found, `terraform plan` will fail with a clear error message.
 
 ## IDE Support (VS Code)

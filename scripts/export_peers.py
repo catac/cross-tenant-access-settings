@@ -37,10 +37,23 @@ def fetch_partners(token):
     response.raise_for_status()
     return response.json()["value"]
 
-def map_partner(p):
+def fetch_tenant_info(token, tenant_id):
+    """Fetch basic tenant information (name and primary domain)"""
+    url = f"https://graph.microsoft.com/v1.0/tenantRelationships/findTenantInformationByTenantId(tenantId='{tenant_id}')"
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        print(f"Warning: Could not fetch info for tenant {tenant_id}: {e}")
+        return {}
+
+def map_partner(p, t_info):
     """Map Graph API partner object to peers.yaml structure"""
     peer = {
-        "name": p.get("displayName"),
+        "name": t_info.get("displayName") or p.get("displayName") or "Unknown",
+        "fqdn": t_info.get("defaultDomainName") or "Unknown",
         "tenant_id": p.get("tenantId")
     }
 
@@ -134,7 +147,12 @@ def main():
         print("Fetching partners from Graph API...")
         partners = fetch_partners(token)
         
-        peers_list = [map_partner(p) for p in partners]
+        peers_list = []
+        for p in partners:
+            tid = p.get("tenantId")
+            print(f"Processing tenant {tid}...")
+            t_info = fetch_tenant_info(token, tid)
+            peers_list.append(map_partner(p, t_info))
         
         # Build YAML content with schema reference
         yaml_content = SCHEMA_REF

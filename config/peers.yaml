@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=../.vscode/cross-tenant-access.schema.json
-- name: null
+- name: Microsoft
+  fqdn: microsoft.onmicrosoft.com
   tenant_id: 72f988bf-86f1-41af-91ab-2d7cd011db47
   inbound:
     b2b_collaboration:
@@ -18,3 +19,9 @@
     automatic_user_consent: true
   tenant_restrictions:
     access_type: allowed
+- name: Contoso, Ltd
+  fqdn: CONTOSO18839.onmicrosoft.com
+  tenant_id: 6babcaad-604b-40ac-a9d7-9fd97c0b779f
+  outbound:
+    b2b_collaboration:
+      access_type: allowed
